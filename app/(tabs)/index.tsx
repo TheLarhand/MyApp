@@ -1,3 +1,4 @@
+import Todo from '@/components/ToDo';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 
 export default function HomeScreen() {
@@ -16,21 +17,7 @@ export default function HomeScreen() {
         <Text numberOfLines={2}>Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text </Text>
       </View>
 
-      {[1, 2, 3, 4, 5 ,6 , 7, 8, 9].map((n) => (
-        <View key={n} style={styles.flexContainer}>
-          <Text>{n}</Text>
-          <View style={styles.flexLeft}>
-            <Text>box 1</Text>
-            <Text>box 2</Text>
-            <Text>box 3</Text>
-          </View>
-          <View style={styles.flexRight}>
-            <Text>box 4</Text>
-            <Text>box 5</Text>
-            <Text>box 6</Text>
-          </View>
-        </View>
-      ))}
+      <Todo/>
 
     </ScrollView>
   );
