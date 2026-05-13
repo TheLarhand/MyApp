@@ -1,30 +1,34 @@
 import React from 'react'
 import TodoItem from './TodoItem';
-import { ScrollView } from 'react-native';
-
-type Todo = {
-    id: number;
-    text: string;
-}
+import { ScrollView, StyleSheet } from 'react-native';
+import { Todo } from '@/app/store/todos';
 
 type Props = {
     todos: Todo[];
-    onDelete: (id: number) => void;
+    onPress: (todo: Todo) => void;
 }
 
-export default function TodoList({todos, onDelete}: Props) {
+export default function TodoList({todos, onPress}: Props) {
 // Сделать надпись если дел нет
   return (
     <ScrollView
         keyboardShouldPersistTaps='handled'
+        style={styles.todoList}
     >
         {todos.map((todo) => (
             <TodoItem
                 key={todo.id}
                 text={todo.text}
-                onDelete={() => onDelete(todo.id)}
+                todo={todo}
+                onPress={() => onPress(todo)}
             />
         ))}
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+    todoList: {
+        backgroundColor: 'white'
+    }
+})

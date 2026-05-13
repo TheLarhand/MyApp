@@ -1,4 +1,3 @@
-import Todo from '@/components/ToDo';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 
 export default function HomeScreen() {
@@ -16,8 +15,6 @@ export default function HomeScreen() {
         <Text>Text inside container</Text>
         <Text numberOfLines={2}>Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text </Text>
       </View>
-
-      <Todo/>
 
     </ScrollView>
   );

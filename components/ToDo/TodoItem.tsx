@@ -1,42 +1,30 @@
+import { Todo } from '@/app/store/todos';
 import React, { useState } from 'react'
 import { Button, Pressable, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 
 type Props = {
     text: string;
-    onDelete: () => void;
+    todo: Todo;
+    onPress: (todo: Todo) => void;
 }
 
-export default function TodoItem({ text, onDelete }: Props) {
+export default function TodoItem({ text, todo, onPress }: Props) {
     const [pressed, setPressed] = useState(false)
     return (
         <View>
             <Text>{text}</Text>
             <View>
-                <Button
-                    title='delete 1'
-                    color='red'
-                    onPress={onDelete}
-                />
-
-                <TouchableOpacity
-                    style={styles.button2}
-                    onPress={onDelete}
-                    activeOpacity={0.5}
-                >
-                    <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
-
                 <Pressable
                     style={({ pressed }) => [
                         styles.button3,
                         pressed && styles.button3Active
                     ]}
-                    onPress={onDelete}
+                    onPress={() => onPress(todo)}
                     onPressIn={() => setPressed(true)}
                     onPressOut={() => setPressed(false)}
                 >
                     <Text style={styles.buttonText}>
-                        {pressed? 'Отпусти' : 'Delete'}
+                        {pressed? 'Отпусти' : 'Перейти'}
                     </Text>
                 </Pressable>
 
