@@ -1,7 +1,7 @@
 import React from 'react'
 import TodoItem from './TodoItem';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Todo } from '@/app/store/todos';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Todo } from '@/app/api/todos';
 
 type Props = {
     todos: Todo[];
@@ -9,26 +9,43 @@ type Props = {
 }
 
 export default function TodoList({todos, onPress}: Props) {
-// Сделать надпись если дел нет
   return (
-    <ScrollView
-        keyboardShouldPersistTaps='handled'
-        style={styles.todoList}
-    >
-        {todos.map((todo) => (
+    <FlatList
+        data={todos}
+        keyExtractor={(item) => item.id.toString()}
+        style= {styles.todoList}
+        renderItem={({item}) => (
             <TodoItem
-                key={todo.id}
-                text={todo.text}
-                todo={todo}
-                onPress={() => onPress(todo)}
+                text={item.title}
+                todo={item}
+                onPress={() => onPress(item)}
             />
-        ))}
-    </ScrollView>
+        )}
+        ListEmptyComponent={
+            <Text>Задач нет</Text>
+        }
+        keyboardShouldPersistTaps='handled'
+    />
+
+    // <ScrollView
+    //     keyboardShouldPersistTaps='handled'
+    //     style={styles.todoList}
+    // >
+    //     {todos.map((todo) => (
+    //         <TodoItem
+    //             key={todo.id}
+    //             text={todo.title}
+    //             todo={todo}
+    //             onPress={() => onPress(todo)}
+    //         />
+    //     ))}
+    // </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
     todoList: {
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        height: 200
     }
 })

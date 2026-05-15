@@ -1,51 +1,79 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { deleteTodo, todosStore, toggleTodo } from "../store/todos";
-import { Alert, Button, Pressable, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Button, Pressable, Text, View } from "react-native";
+import { deleteTodo, getTodoById, Todo, toggleTodo } from "../api/todos";
 
 export default function TodoDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
 
-    const todo = todosStore.find((t) => t.id === Number(id))
+    const [todo, setTodo] = useState<Todo | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-    if (!todo) {
-        return (
-            <View>
-                <Text>Задача не найдена :(</Text>
-                <Button title="Назад" onPress={() => router.back()} />
-            </View>
-        )
+    useEffect(() => {
+        loadTodo()
+    }, [id])
+
+    async function loadTodo() {
+        try {
+            setLoading(true)
+            setError(null)
+            const data = await getTodoById(Number(id))
+            setTodo(data)
+        } catch (error) {
+            setError(`Ошибка: ${error}`)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    function handleToggleDone() {
-        toggleTodo(Number(id))
-        router.back()
+
+    async function handleToggleDone() {
+        if (!todo) return
+        try {
+            const updated = await toggleTodo(todo.id, !todo.completed)
+            setTodo(updated)
+            router.back()
+        } catch (error) {
+            setError(`Ошибка: ${error}`)
+        }
     }
 
-    function handleDelete(id: number) {
-        const todoId = Number(id)
-
-        deleteTodo(todoId)
-                    router.back()
-
-        // Alert.alert('Удалить текущую задачу?', 'Это необратимо!', [
-        //     { text: 'Отмена' },
-        //     {
-        //         text: 'Удалить',
-        //         onPress: () => {
-        //             deleteTodo(todoId)
-        //             router.back()
-        //         }
-        //     }
-        // ])
+    async function handleDelete() {
+        if (!todo) return
+        try {
+            await deleteTodo(todo.id)
+            router.back()
+        } catch (error) {
+            setError(`Ошибка: ${error}`)
+        }
 
     }
+    
+    if (loading) {
+            return (
+                <View>
+                    <ActivityIndicator size='large'/>
+                    <Text>Загрузка</Text>
+                </View>
+            )
+        }
+    
+        if (error || !todo) {
+            return (
+                <View>
+                    <Text>{error ?? 'Задача не найена'}</Text>
+                    <Button title="Назад" onPress={() => router.back()} />
+                </View>
+            )
+        }
 
     return (
         <View>
-            <Text>{todo.text} {id}</Text>
-            <Text>{todo.done ? 'Выполнено' : 'Не выполнено'}</Text>
-            <Button title="удалить"  onPress={() => handleDelete(Number(id))} />
-            <Button title="Выполнить" onPress={handleToggleDone} />
+            <Text>{todo.title} {id}</Text>
+            <Text>{todo.completed ? 'Выполнено' : 'Не выполнено'}</Text>
+            <Button title="удалить (запрос работает просто мы работаем с не своим API)" onPress={handleDelete} />
+            <Button title="Выполнить (запрос работает просто мы работаем с не своим API)" onPress={handleToggleDone} />
         </View>
     )
 }

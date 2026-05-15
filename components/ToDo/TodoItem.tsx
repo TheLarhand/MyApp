@@ -1,4 +1,4 @@
-import { Todo } from '@/app/store/todos';
+import { Todo } from '@/app/api/todos';
 import React, { useState } from 'react'
 import { Button, Pressable, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 
